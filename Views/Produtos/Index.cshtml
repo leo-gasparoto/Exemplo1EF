@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Exemplo1EF.Models.Produto>
+
+@{
+    ViewData["Title"] = "Cadastro de Produtos";
+}
+
+<style>
+    body{
+background-color:yellow
+    }
+</style>
+
+<h1 style="color:black">Cadastro de Produtos</h1>
+
+<p style="color:black">
+    <a asp-action="Create">Criar Novo</a>
+</p>
+
+<div class="table-responsive" style="border-color: black; border-radius: 10px; background-color: white">
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nome)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Estoque)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Categoria)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estoque)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Categoria.Nome)
+                    </td>
+                    <td>
+                            <a asp-action="Edit" asp-route-id="@item.ProdutoId" class="btn btn-warming btn-sm rounded-3 text-white" style="Background-color: forestgreen">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.ProdutoId" class="btn btn-info btn-sm rounded-3 text-white" style="background-color: cornflowerblue; ">Detalhes</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ProdutoId" class="btn btn-danger btn-sm rounded-3 text-white">Excluir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

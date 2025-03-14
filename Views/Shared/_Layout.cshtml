@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Exemplo1EF.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body style="background-color:gold; color: black;">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-danger border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark dark border-bottom box-shadow mb-3" style="background-color:chocolate">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Exemplo1EF</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -31,6 +31,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Categorias" asp-action="Index">Categorias</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Produtos" asp-action="Index">Produto</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -42,7 +45,7 @@
         </main>
     </div>
 
-    <footer class="footer text-dark bg-danger text-center p-3">
+    <footer class="footer text-white bg-dark text-center p-3" style="background-color:saddlebrown">
         <div class="container">
             &copy; 2025 - Exemplo1EF - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

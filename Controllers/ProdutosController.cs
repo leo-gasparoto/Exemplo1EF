@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,24 +8,26 @@ using Microsoft.EntityFrameworkCore;
 using Exemplo1EF.Data;
 using Exemplo1EF.Models;
 
-namespace ExemploEF.Controllers
+namespace Exemplo1EF.Controllers
 {
-    public class CategoriasController : Controller
+    public class ProdutosController
+        : Controller
     {
         private readonly Context _context;
 
-        public CategoriasController(Context context)
+        public ProdutosController(Context context)
         {
             _context = context;
         }
 
-        // GET: Categorias
+        // GET: Produtoes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categoria.ToListAsync());
+            var context = _context.Produtos.Include(p => p.Categoria);
+            return View(await context.ToListAsync());
         }
 
-        // GET: Categorias/Details/5
+        // GET: Produtoes/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -32,40 +35,43 @@ namespace ExemploEF.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categoria
-                .FirstOrDefaultAsync(m => m.CategoriaId == id);
-            if (categoria == null)
+            var produto = await _context.Produtos
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+            if (produto == null)
             {
                 return NotFound();
             }
 
-            return View(categoria);
+            return View(produto);
         }
 
-        // GET: Categorias/Create
+        // GET: Produtoes/Create
         public IActionResult Create()
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nome");
             return View();
         }
 
-        // POST: Categorias/Create
+        // POST: Produtoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoriaId,Nome")] Categoria categoria)
+        public async Task<IActionResult> Create([Bind("ProdutoId,Nome,Estoque,CategoriaId")] Produto produto)
         {
             if (ModelState.IsValid)
             {
-                categoria.CategoriaId = Guid.NewGuid();
-                _context.Add(categoria);
+                produto.ProdutoId = Guid.NewGuid();
+                _context.Add(produto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(categoria);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nome", produto.CategoriaId);
+            return View(produto);
         }
 
-        // GET: Categorias/Edit/5
+        // GET: Produtoes/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -73,22 +79,23 @@ namespace ExemploEF.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categoria.FindAsync(id);
-            if (categoria == null)
+            var produto = await _context.Produtos.FindAsync(id);
+            if (produto == null)
             {
                 return NotFound();
             }
-            return View(categoria);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nome", produto.CategoriaId);
+            return View(produto);
         }
 
-        // POST: Categorias/Edit/5
+        // POST: Produtoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("CategoriaId,Nome")] Categoria categoria)
+        public async Task<IActionResult> Edit(Guid id, [Bind("ProdutoId,Nome,Estoque,CategoriaId")] Produto produto)
         {
-            if (id != categoria.CategoriaId)
+            if (id != produto.ProdutoId)
             {
                 return NotFound();
             }
@@ -97,12 +104,12 @@ namespace ExemploEF.Controllers
             {
                 try
                 {
-                    _context.Update(categoria);
+                    _context.Update(produto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoriaExists(categoria.CategoriaId))
+                    if (!ProdutoExists(produto.ProdutoId))
                     {
                         return NotFound();
                     }
@@ -113,10 +120,11 @@ namespace ExemploEF.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(categoria);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nome", produto.CategoriaId);
+            return View(produto);
         }
 
-        // GET: Categorias/Delete/5
+        // GET: Produtoes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -124,34 +132,35 @@ namespace ExemploEF.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categoria
-                .FirstOrDefaultAsync(m => m.CategoriaId == id);
-            if (categoria == null)
+            var produto = await _context.Produtos
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+            if (produto == null)
             {
                 return NotFound();
             }
 
-            return View(categoria);
+            return View(produto);
         }
 
-        // POST: Categorias/Delete/5
+        // POST: Produtoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var categoria = await _context.Categoria.FindAsync(id);
-            if (categoria != null)
+            var produto = await _context.Produtos.FindAsync(id);
+            if (produto != null)
             {
-                _context.Categoria.Remove(categoria);
+                _context.Produtos.Remove(produto);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoriaExists(Guid id)
+        private bool ProdutoExists(Guid id)
         {
-            return _context.Categoria.Any(e => e.CategoriaId == id);
+            return _context.Produtos.Any(e => e.ProdutoId == id);
         }
     }
 }
